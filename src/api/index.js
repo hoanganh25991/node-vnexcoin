@@ -1,6 +1,4 @@
-import { sendPrizeInfo } from "../email/index"
 import { tinyToken, decodeToken } from "../token/index"
-import { getCampaignAndPrizes, checkElg, drawPrize } from "../mysql/index"
 
 const _ = console.log
 
@@ -10,8 +8,8 @@ export const CHECK_EMAIL_ELIGIBILITY = "CHECK_EMAIL_ELIGIBILITY"
 export const DRAW_PRIZE = "DRAW_PRIZE"
 export const SEND_EMAIL = "SEND_EMAIL"
 
-export const noTknRes = reqbody => ({ statusCode: 422, resData: { msg: "Please submit token.", reqbody } })
-export const decodeErrRes = err => ({ statusCode: 422, resData: err })
+export const noTokenErrRes = reqbody => ({ statusCode: 422, resData: { msg: "Please submit token.", reqbody } })
+export const decodeTokenErrRes = err => ({ statusCode: 422, resData: { msg: "Fail to decode token.", err } })
 
 export const _api = async reqBody => {
   const { type } = reqBody
@@ -20,49 +18,6 @@ export const _api = async reqBody => {
 
   switch (type) {
     case REGISTER: {
-      const { code, email } = reqBody
-      const missing = !code || !email
-      if (missing) {
-        statusCode = 422
-        resData = { msg: "Please submit code & email", reqBody }
-        break
-      }
-
-      const { token, err } = tinyToken({ code, email })
-      resData = { token, err }
-      if (err) statusCode = 422
-      break
-    }
-    case RETRIEVE_CAMPAIGN_PRIZES: {
-      const { code } = reqBody
-      const { campaign, prizes } = await getCampaignAndPrizes(code)
-      resData = { campaign, prizes }
-      break
-    }
-    case CHECK_EMAIL_ELIGIBILITY: {
-      const { code, email } = reqBody
-      const { eligibility = false, err } = await checkElg({ code, email })
-      resData = { eligibility, err }
-      if (err) statusCode = 422
-      break
-    }
-    case DRAW_PRIZE: {
-      const { code, email } = reqBody
-      const { entry, err } = await drawPrize({ code, email })
-      resData = { entry, err }
-      if (err) statusCode = 422
-      break
-    }
-    case SEND_EMAIL: {
-      const { entryId } = reqBody
-      if (!entryId) {
-        statusCode = 422
-        resData = { err: { msg: "Please submit entryId", reqBody } }
-        break
-      }
-      const { beingSent = false, err } = await sendPrizeInfo(entryId)
-      resData = { beingSent, err }
-      if (err) statusCode = 422
       break
     }
     default: {
@@ -102,7 +57,7 @@ export const apiMiddleware = async (req, res, next) => {
 
   const reqBody = req.body
   if (!token) {
-    const { statusCode, resData } = noTknRes(reqBody)
+    const { statusCode, resData } = noTokenErrRes(reqBody)
     res.status(statusCode)
     res.json(resData)
     return
@@ -110,7 +65,7 @@ export const apiMiddleware = async (req, res, next) => {
 
   const { data, err } = await decodeToken(token)
   if (err) {
-    const { statusCode, resData } = decodeErrRes(err)
+    const { statusCode, resData } = decodeTokenErrRes(err)
     res.status(statusCode)
     res.json(resData)
     return
@@ -140,6 +95,5 @@ export const errMiddleWare = (err, req, res, next) => {
 
 export const injectReqUri = (req, res, next) => {
   process.reqRoot = req.protocol + "://" + req.get("host")
-  // process.reqRoot = req.protocol + "://" + req.get("host") + req.originalUrl
   next()
 }
