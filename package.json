@@ -36,7 +36,8 @@
     "start:dev": "nodemon dist/bin/www",
     "test": "babel-node scripts/run-test",
     "build": "babel-node scripts/deploy.js",
-    "migration": "babel-node scripts/migration.js"
+    "migration": "babel-node scripts/migration.js",
+    "docs":"postmanerator -output=tmp/doc.html -collection=tmp/vnexcoin.postman_collection.json"
   },
   "lint-staged": {
     "*.js": [
