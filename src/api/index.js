@@ -2,11 +2,8 @@ export { apiMiddleware } from "./apiMiddleware"
 export { errMiddleWare } from "./errMiddleware"
 export { injectReqUri } from "./injectUri"
 
-export const REGISTER = "REGISTER"
-export const RETRIEVE_CAMPAIGN_PRIZES = "RETRIEVE_CAMPAIGN_PRIZES"
-export const CHECK_EMAIL_ELIGIBILITY = "CHECK_EMAIL_ELIGIBILITY"
-export const DRAW_PRIZE = "DRAW_PRIZE"
-export const SEND_EMAIL = "SEND_EMAIL"
+export const TRANSFER_SMS_MSG = "TRANSFER_SMS_MSG"
+export const OTP_SMS_MSG = "OTP_SMS_MSG"
 
 const _ = console.log
 
@@ -22,7 +19,14 @@ export const api = async reqBody => {
   let statusCode = 200
 
   switch (type) {
-    case REGISTER: {
+    case TRANSFER_SMS_MSG: {
+      const { msg } = reqBody
+      resData = { received: true, msg }
+      break
+    }
+    case OTP_SMS_MSG: {
+      const { msg } = reqBody
+      resData = { received: true, msg }
       break
     }
     default: {
