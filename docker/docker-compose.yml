@@ -1,0 +1,13 @@
+version: '3'
+services:
+    gobear:
+        image: "ous/gobear:v0.0.5"
+        ports:
+         - "80:80"
+        volumes:
+            - gobear-lottery-mysql:/var/lib/mysql
+            - gobear-lottery-uploads:/var/www/html/uploads
+        container_name: gobear
+volumes:
+    gobear-lottery-mysql:
+    gobear-lottery-uploads:
