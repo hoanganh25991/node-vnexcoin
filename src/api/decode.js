@@ -2,9 +2,10 @@ import crypto from "crypto"
 
 const _ = console.log
 const key = "AlCfIvNuzsdjkh723"
-const algorithm = "aes-128-cbc"
+const algorithm = "aes-128-ecb"
 
 const encrypt = function(str, key) {
+  // By default, cipher hash MD5 on key
   const cipher = crypto.createCipher(algorithm, key)
   cipher.update(str, "utf8", "base64")
   return cipher.final("base64")

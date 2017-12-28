@@ -9,9 +9,9 @@ export const shouldObmitToken = type => {
 }
 
 export const checkRequiredKey = reqBody => {
-  const { msg, senderNumber, IMEI } = reqBody
-  const validated = msg && senderNumber
-  const errMsg = validated ? undefined : "Please submit required keys: msg, senderNumber, IMEI"
+  const { payloadToken } = reqBody
+  const validated = payloadToken
+  const errMsg = validated ? undefined : "Please submit required keys: payloadToken"
   return { validated, errMsg }
 }
 
