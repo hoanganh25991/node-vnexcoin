@@ -13,14 +13,14 @@ export const mPHM = {
   transactionId: 2
 }
 
-export const parseTransferringMsg = msg => {
-  const pattern = /So du TK VCB.+luc (\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}).+Ref.+\.TRANSFERRING(.{24})\./
+export const parseDoneTransferMsg = msg => {
+  const pattern = /So du TK VCB.+luc (\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}).+Ref.+\.CKXONG(.{24})\./
   const matches = msg.match(pattern)
   if (!matches) return null
-  return mapTransferringMatches(matches)
+  return mapDoneTransferMatches(matches)
 }
 
-export const mapTransferringMatches = matches => {
+export const mapDoneTransferMatches = matches => {
   try {
     const vcbTime = matches[mPHM.vcbTime]
     const transactionId = matches[mPHM.transactionId]

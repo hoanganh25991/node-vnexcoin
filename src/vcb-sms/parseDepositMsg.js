@@ -45,7 +45,7 @@ export const mapDepositMatches = matches => {
       vcbTime: +vcbTimeMObj.format("X")
     }
   } catch (err) {
-    _("[mapTransferringMatches][ERR]", err)
+    _("[mapDoneTransferMatches][ERR]", err)
     return null
   }
 }

@@ -3,6 +3,7 @@ import { isDoneDepositMsg } from "./isDoneDepositMsg"
 import { parseAskTransferMsg } from "./parseAskTransferMsg"
 import { isReceivedCoinMsg } from "./isReceivedCoin"
 import { parseTransferringMsg } from "./parseTransferringMsg"
+import { parseDoneTransferMsg } from "./parseDoneTransferMsg"
 import { store as saveTransactionToDb, find as findTran } from "../mongodb/transaction"
 
 /**
@@ -25,7 +26,8 @@ export const parseProcesses = [
   { func: isDoneDepositMsg, status: DONE_DEPOSIT },
   { func: parseAskTransferMsg, status: ASK_TRANSFER },
   { func: isReceivedCoinMsg, status: RECEIVED_COIN },
-  { func: parseTransferringMsg, status: TRANSFERRING_TO_SELLER }
+  { func: parseTransferringMsg, status: TRANSFERRING_TO_SELLER },
+  { func: parseDoneTransferMsg, status: DONE_TRANSFER_TO_SELLER }
 ]
 
 export const parseSms = async sms => {
@@ -75,7 +77,14 @@ export const parseSms = async sms => {
       const transaction = await findTran(id)
       const tranObj = transaction.toObject()
       const tranInfo = tranObj && { ...tranObj, status: TRANSFERRING_TO_SELLER }
-      _("tranInfo", tranInfo)
+      tasks.push(saveTransactionToDb(tranInfo))
+      break
+    }
+    case DONE_TRANSFER_TO_SELLER: {
+      const { transactionId: id } = parsed
+      const transaction = await findTran(id)
+      const tranObj = transaction.toObject()
+      const tranInfo = tranObj && { ...tranObj, status: DONE_TRANSFER_TO_SELLER }
       tasks.push(saveTransactionToDb(tranInfo))
       break
     }
