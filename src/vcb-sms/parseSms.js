@@ -2,8 +2,8 @@ import { parseDepositMsg } from "./parseDepositMsg"
 import { isDoneDepositMsg } from "./isDoneDepositMsg"
 import { parseAskTransferMsg } from "./parseAskTransferMsg"
 import { isReceivedCoinMsg } from "./isReceivedCoin"
-import { parseTransferMsg } from "./parseTransferMsg"
-import { store as saveTransactionToDb } from "../mongodb/transaction"
+import { parseTransferringMsg } from "./parseTransferringMsg"
+import { store as saveTransactionToDb, find as findTran } from "../mongodb/transaction"
 
 /**
  * Explain meaning for status in Transaction model
@@ -25,10 +25,10 @@ export const parseProcesses = [
   { func: isDoneDepositMsg, status: DONE_DEPOSIT },
   { func: parseAskTransferMsg, status: ASK_TRANSFER },
   { func: isReceivedCoinMsg, status: RECEIVED_COIN },
-  { func: parseTransferMsg, status: TRANSFERRING_TO_SELLER }
+  { func: parseTransferringMsg, status: TRANSFERRING_TO_SELLER }
 ]
 
-export const parseSms = sms => {
+export const parseSms = async sms => {
   const carry = parseProcesses.reduce((carry, parseProcess) => {
     // Ignore, if successful parse
     if (carry && carry.parsed) return carry
@@ -67,6 +67,15 @@ export const parseSms = sms => {
       const { sellerNumber } = parsed
       const { senderNumber: buyerNumber } = sms
       const tranInfo = { buyerNumber, sellerNumber, status: RECEIVED_COIN }
+      tasks.push(saveTransactionToDb(tranInfo))
+      break
+    }
+    case TRANSFERRING_TO_SELLER: {
+      const { transactionId: id } = parsed
+      const transaction = await findTran(id)
+      const tranObj = transaction.toObject()
+      const tranInfo = tranObj && { ...tranObj, status: TRANSFERRING_TO_SELLER }
+      _("tranInfo", tranInfo)
       tasks.push(saveTransactionToDb(tranInfo))
       break
     }
