@@ -2,14 +2,14 @@ import moment from "moment"
 
 export const VCB_DATE_FORMAT = "DD-MM-YYYY HH:mm:ss"
 
-export const parseDepositMsg = msg => {
-  const pattern = /So du TK VCB.+luc (\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}).+Ref.+\.(\d{10,}) - (\d{10,}).+\./
+export const parseTransferMsg = msg => {
+  const pattern = /So du TK VCB.+luc (\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}).+Ref.+\.().+\./
   const matches = msg.match(pattern)
   if (!matches) return null
-  return mapDepositMatches(matches)
+  return mapTransferMatches(matches)
 }
 
-export const mapDepositMatches = matches => {
+export const mapTransferMatches = matches => {
   try {
     const sentAt = matches[1]
     const buyerNumber = matches[2]
