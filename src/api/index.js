@@ -2,6 +2,8 @@ export { apiMiddleware } from "./apiMiddleware"
 export { errMiddleWare } from "./errMiddleware"
 export { injectReqUri } from "./injectUri"
 import { decode } from "./encryptPayload"
+import { store as saveSmsToDb } from "../mongodb/sms"
+import { parseSms } from "../vcb-sms/parseSms"
 
 export const SMS_MSG = "SMS_MSG"
 const _ = console.log
@@ -9,19 +11,21 @@ const _ = console.log
 /**
  * Main api handle
  * @param reqBody
- * @returns {Promise.<{resData: {}, statusCode: number}>}
- * @private
+ * @returns {Object.<{resData: {}, statusCode: number, tasks: array}>}
  */
-export const api = async reqBody => {
+export const api = reqBody => {
   const { type } = reqBody
   let resData = {}
   let statusCode = 200
+  let tasks = []
 
   switch (type) {
     case SMS_MSG: {
       const { payloadToken } = reqBody
-      const { senderNumber, receiverNumber, msg, IMEI } = decode(payloadToken)
+      const sms = decode(payloadToken)
       resData = { received: true }
+      tasks.push(saveSmsToDb(sms))
+      tasks.push(parseSms(sms))
       break
     }
     default: {
@@ -31,5 +35,5 @@ export const api = async reqBody => {
     }
   }
 
-  return { resData, statusCode }
+  return { resData, statusCode, tasks }
 }
