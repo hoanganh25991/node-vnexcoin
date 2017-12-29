@@ -12,10 +12,12 @@ _("")
   let pass = true
 
   try {
-    const msg = fs.readFileSync(path.join(__dirname, "receiveTransferMsg.txt")).toString()
-    const { buyerNumber } = parseDepositMsg(msg)
-    const expectedNumber = "01256654629"
-    pass = buyerNumber === expectedNumber
+    const bundleMsg = fs.readFileSync(path.join(__dirname, "bundleMsg.txt")).toString()
+    const msgs = bundleMsg.split(/\r?\n/)
+    msgs.forEach(msg => {
+      const parsed = parseDepositMsg(msg)
+      _("[parsed]", parsed)
+    })
   } catch (err) {
     _("[ERR]", err)
     pass = false
