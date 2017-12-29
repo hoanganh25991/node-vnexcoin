@@ -33,8 +33,7 @@
   "scripts": {
     "precommit": "lint-staged",
     "postmerge": "yarn build",
-    "start": "yarn migration && yarn build && yarn start:dev",
-    "restart": "yarn migration && yarn build && yarn start:dev",
+    "start": "yarn start:dev",
     "start:dev": "nodemon dist/bin/www",
     "test": "babel-node scripts/run-test",
     "build": "babel-node scripts/deploy.js",
