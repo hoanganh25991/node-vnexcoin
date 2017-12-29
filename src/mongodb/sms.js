@@ -2,32 +2,37 @@ import m from "mongoose"
 import { debugEnhance } from "../utils/index"
 import moment from "moment"
 
-export const DEFAULT_HISTORY_QUERY_TIME = 1800 // 30 minutes
+export const DEFAULT_HISTORY_QUERY_TIME = 86400 // 1 days
 export const DEFAULT_HISTORY_LIMIT = 20 // 30 minutes
 
-export const getAll = () => {
-  const Sms = m.model("Sms")
-  return Sms.find({})
-    .exec()
-    .catch(err => err)
+export const getModel = modelName => {
+  modelName = modelName || "Sms"
+  return m.model(modelName)
 }
 
-export const storeSms = debugEnhance(smsInfo => {
-  const Sms = model("Sms")
-  const { senderNumber, receiverNumber, timestamp } = smsInfo
-  return Sms.update({ senderNumber, receiverNumber, timestamp }, smsInfo, { upsert: true, new: true })
+export const getAll = debugEnhance(() => {
+  const Model = getModel()
+  return Model.find({})
     .exec()
     .catch(err => err)
-}, "storeSms")
+}, "sms.getAll")
 
-export const getSmsHistory = debugEnhance(queryInfo => {
-  const Sms = model("Sms")
+export const store = debugEnhance(smsInfo => {
+  const Model = getModel()
+  const { senderNumber, receiverNumber, timestamp } = smsInfo
+  return Model.update({ senderNumber, receiverNumber, timestamp }, smsInfo, { upsert: true, new: true })
+    .exec()
+    .catch(err => err)
+}, "sms.store")
+
+export const getHistory = debugEnhance(queryInfo => {
+  const Model = getModel()
   const { senderNumber, queryTime = DEFAULT_HISTORY_QUERY_TIME, queryLimit = DEFAULT_HISTORY_LIMIT } = queryInfo
   const queryTimestamp = +moment()
     .subtract(queryTime, "seconds")
     .format("X")
-  return Sms.find({ senderNumber, timestamp: { $lt: queryTimestamp } })
+  return Model.find({ senderNumber, timestamp: { $lt: queryTimestamp } })
     .limit(queryLimit)
     .exec()
     .catch(err => err)
-})
+}, "sms.getHistory")
