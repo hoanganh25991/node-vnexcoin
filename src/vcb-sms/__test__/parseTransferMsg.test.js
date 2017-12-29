@@ -14,10 +14,11 @@ _("")
   try {
     const msg = fs.readFileSync(path.join(__dirname, "transferMsg.txt")).toString()
     const parsed = parseTransferMsg(msg)
+    _("[parsed]", parsed)
+    if (!parsed) return (pass = false && _(`Fail to parsed`))
     const { transactionId } = parsed
     const expectedTransactionId = "5a4611dc411508295438bec0"
     pass = transactionId === expectedTransactionId
-    _("[parsed]", parsed)
   } catch (err) {
     _("[ERR]", err)
     pass = false
