@@ -1,4 +1,4 @@
-import { decode } from "../decode"
+import { decode } from "../encryptPayload"
 import fs from "fs"
 import path from "path"
 
@@ -8,13 +8,13 @@ _("")
 ;(async () => {
   const TEST_CASE = "Decode"
   let pass = true
-
-  const base64 = fs.readFileSync(path.join(__dirname, "encrypted2.txt")).toString()
-
-  _("[base64]", base64)
+  const paylodToken = fs.readFileSync(path.join(__dirname, "encrypted.txt")).toString()
 
   try {
-    decode(base64)
+    const payload = decode(paylodToken)
+    _("[payload]", payload)
+    const expectedName = "anh"
+    pass = payload.name === expectedName
   } catch (err) {
     _(err)
     pass = false

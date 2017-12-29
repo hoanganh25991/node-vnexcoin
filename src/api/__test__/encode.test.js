@@ -1,4 +1,4 @@
-import { encode } from "../decode"
+import { encode } from "../encryptPayload"
 
 const _ = console.log
 
@@ -8,8 +8,10 @@ _("")
   let pass = true
 
   try {
-    const base64 = encode("hello world")
-    // _("[base64]", base64)
+    const payloadToken = encode({ name: "anh" })
+    _("[payloadToken]", payloadToken)
+    const expectedToken = "/6yUvTZLkZ1cAS8lUQauwA=="
+    pass = payloadToken === expectedToken
   } catch (err) {
     _(err)
     pass = false

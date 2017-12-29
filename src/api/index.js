@@ -1,7 +1,7 @@
 export { apiMiddleware } from "./apiMiddleware"
 export { errMiddleWare } from "./errMiddleware"
 export { injectReqUri } from "./injectUri"
-import { decode } from "./decode"
+import { decode } from "./encryptPayload"
 
 export const SMS_MSG = "SMS_MSG"
 const _ = console.log
