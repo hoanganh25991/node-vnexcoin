@@ -1,4 +1,4 @@
-import { choosenPlatforms } from "./answer"
+import { choosenPlatforms } from "../answer"
 
 const _ = console.log
 

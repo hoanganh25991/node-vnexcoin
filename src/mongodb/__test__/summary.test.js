@@ -1,4 +1,4 @@
-import { computeSummary, PLATFORM, MULTIPLY } from "./answer"
+import { computeSummary, PLATFORM, MULTIPLY } from "../answer"
 
 const _ = console.log
 
