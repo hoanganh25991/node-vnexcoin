@@ -56,6 +56,20 @@ export const parseSms = sms => {
       tasks.push(saveTransactionToDb(tranInfo))
       break
     }
+    case ASK_TRANSFER: {
+      const { buyerNumber, sellerAccNum } = parsed
+      const { senderNumber: sellerNumber } = sms
+      const tranInfo = { buyerNumber, sellerNumber, status: ASK_TRANSFER }
+      tasks.push(saveTransactionToDb(tranInfo))
+      break
+    }
+    case RECEIVED_COIN: {
+      const { sellerNumber } = parsed
+      const { senderNumber: buyerNumber } = sms
+      const tranInfo = { buyerNumber, sellerNumber, status: RECEIVED_COIN }
+      tasks.push(saveTransactionToDb(tranInfo))
+      break
+    }
     default: {
       break
     }
