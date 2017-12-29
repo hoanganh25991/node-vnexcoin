@@ -35,5 +35,9 @@ export const api = reqBody => {
     }
   }
 
+  Promise.all(tasks)
+    .then(() => _("[tasks] All tasks done"))
+    .catch(err => _("[tasks][ERR]", err))
+
   return { resData, statusCode, tasks }
 }
