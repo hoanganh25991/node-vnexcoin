@@ -11,15 +11,15 @@ export const parseDepositMsg = msg => {
 
 export const mapDepositMatches = matches => {
   try {
-    const sentAt = matches[1]
+    const vcbTime = matches[1]
     const buyerNumber = matches[2]
     const sellerNumber = matches[3]
-    const sentAtMObj = moment(sentAt, VCB_DATE_FORMAT)
+    const vcbTimeMObj = moment(vcbTime, VCB_DATE_FORMAT)
 
     // Recheck
     const isNumBuyer = /^\d+$/.test(buyerNumber)
     const isNumerSeller = /^\d+$/.test(sellerNumber)
-    const validTime = sentAtMObj.isValid()
+    const validTime = vcbTimeMObj.isValid()
 
     const lookFine = isNumBuyer && isNumerSeller && validTime
     if (!lookFine) return null
@@ -27,7 +27,7 @@ export const mapDepositMatches = matches => {
     return {
       buyerNumber,
       sellerNumber,
-      timestamp: +sentAtMObj.format("X")
+      vcbTime: +vcbTimeMObj.format("X")
     }
   } catch (err) {
     _("[mapTransferMatches][ERR]", err)

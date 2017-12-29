@@ -1,5 +1,6 @@
 import moment from "moment"
 
+const _ = console.log
 export const VCB_DATE_FORMAT = "DD-MM-YYYY HH:mm:ss"
 
 export const parseTransferMsg = msg => {
@@ -11,23 +12,20 @@ export const parseTransferMsg = msg => {
 
 export const mapTransferMatches = matches => {
   try {
-    const sentAt = matches[1]
-    const buyerNumber = matches[2]
-    const sellerNumber = matches[3]
-    const sentAtMObj = moment(sentAt, VCB_DATE_FORMAT)
+    const vcbTime = matches[1]
+    const transactionId = matches[2]
+    const vcbTimeMObj = moment(vcbTime, VCB_DATE_FORMAT)
 
     // Recheck
-    const isNumBuyer = /^\d+$/.test(buyerNumber)
-    const isNumerSeller = /^\d+$/.test(sellerNumber)
-    const validTime = sentAtMObj.isValid()
+    const isObjId = /^[A-Za-z0-9]+$/.test(transactionId)
+    const validTime = vcbTimeMObj.isValid()
 
-    const lookFine = isNumBuyer && isNumerSeller && validTime
+    const lookFine = isObjId && validTime
     if (!lookFine) return null
 
     return {
-      buyerNumber,
-      sellerNumber,
-      timestamp: +sentAtMObj.format("X")
+      transactionId,
+      vcbTime: +vcbTimeMObj.format("X")
     }
   } catch (err) {
     _("[mapTransferMatches][ERR]", err)
