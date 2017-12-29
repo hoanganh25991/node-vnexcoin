@@ -1,6 +1,6 @@
-import { Schema, model } from "mongoose"
+import m from "mongoose"
 
-const SmsSchema = new Schema({
+const SmsSchema = new m.Schema({
   senderNumber: {
     type: String
   },
@@ -18,4 +18,4 @@ const SmsSchema = new Schema({
   }
 })
 
-model("Sms", SmsSchema, "smses")
+m.model("Sms", SmsSchema, "smses")

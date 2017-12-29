@@ -1,11 +1,13 @@
 import { getAll } from "../sms"
-import { closeConnection } from "../connection"
+import { connect, loadModels, closeConnection } from "../connection"
 
 const _ = console.log
+connect("vnexcoin")
+loadModels()
 
-_("^^")
+_("")
 ;(async () => {
-  const TEST_CASE = "Compute summary"
+  const TEST_CASE = "Get All SMSes"
   const PASS = `\x1b[42m[PASS]\x1b[0m ${TEST_CASE}`
   const FAIL = `\x1b[41m[FAIL]\x1b[0m ${TEST_CASE}`
   let pass = true
