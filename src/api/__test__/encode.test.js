@@ -1,4 +1,4 @@
-import { encode } from "../encryptPayload"
+import { encrypt } from "../encryptPayload"
 
 const _ = console.log
 
@@ -8,7 +8,7 @@ _("")
   let pass = true
 
   try {
-    const payloadToken = encode({ name: "anh" })
+    const payloadToken = encrypt({ name: "anh" })
     _("[payloadToken]", payloadToken)
     const expectedToken = "/6yUvTZLkZ1cAS8lUQauwA=="
     pass = payloadToken === expectedToken

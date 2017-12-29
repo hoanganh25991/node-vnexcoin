@@ -1,4 +1,4 @@
-import { decode } from "../encryptPayload"
+import { decrypt } from "../encryptPayload"
 import fs from "fs"
 import path from "path"
 
@@ -11,7 +11,7 @@ _("")
   const paylodToken = fs.readFileSync(path.join(__dirname, "encrypted.txt")).toString()
 
   try {
-    const payload = decode(paylodToken)
+    const payload = decrypt(paylodToken)
     _("[payload]", payload)
     const expectedName = "anh"
     pass = payload.name === expectedName
