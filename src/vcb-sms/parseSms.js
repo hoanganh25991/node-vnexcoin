@@ -1,8 +1,8 @@
-import { parseAskTransferMsg } from "./parseAskTransferMsg"
-import { parseTransferMsg } from "./parseTransferMsg"
 import { parseDepositMsg } from "./parseDepositMsg"
 import { isDoneDepositMsg } from "./isDoneDepositMsg"
+import { parseAskTransferMsg } from "./parseAskTransferMsg"
 import { isReceivedCoinMsg } from "./isReceivedCoin"
+import { parseTransferMsg } from "./parseTransferMsg"
 import { store as saveTransactionToDb } from "../mongodb/transaction"
 
 /**
@@ -31,7 +31,7 @@ export const parseProcesses = [
 export const parseSms = sms => {
   const carry = parseProcesses.reduce((carry, parseProcess) => {
     // Ignore, if successful parse
-    if (carry) return carry
+    if (carry && carry.parsed) return carry
     const { func, status } = parseProcess
     const parsed = func(sms.msg)
     return { parsed, status }
@@ -46,6 +46,13 @@ export const parseSms = sms => {
   switch (status) {
     case TRANSFERRING_DEPOSIT: {
       const tranInfo = parsed && { ...parsed, status: TRANSFERRING_DEPOSIT }
+      tasks.push(saveTransactionToDb(tranInfo))
+      break
+    }
+    case DONE_DEPOSIT: {
+      const { sellerNumber } = parsed
+      const { senderNumber: buyerNumber } = sms
+      const tranInfo = { buyerNumber, sellerNumber, status: DONE_DEPOSIT }
       tasks.push(saveTransactionToDb(tranInfo))
       break
     }

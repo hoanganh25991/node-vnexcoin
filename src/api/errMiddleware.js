@@ -9,7 +9,7 @@
  * @param next
  */
 export const errMiddleWare = (err, req, res, next) => {
-  _(err)
+  console.log(err)
   res.status(err.status || 500)
   res.send("ERR")
 }

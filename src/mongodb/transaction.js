@@ -24,14 +24,15 @@ export const store = debugEnhance(tranInfo => {
   }
   const Model = getModel()
   const { buyerNumber, sellerNumber } = tranInfo
-  const modelWait = Model.findOne({ buyerNumber, sellerNumber, status: { $ne: DONE_TRANSFER_TO_SELLER } })
-  const saveWait = modelWait
+  const findWait = Model.findOne({ buyerNumber, sellerNumber, status: { $ne: DONE_TRANSFER_TO_SELLER } })
+  const saveWait = findWait
     .then(existTran => {
       const curr = (existTran && existTran.amount) || 0
-      const addUp = tranInfo.amount
+      const addUp = tranInfo.amount || 0
       const amount = curr + addUp
+      const status = tranInfo.status || existTran.status
       const transaction = existTran || new Model(tranInfo)
-      transaction.amount = amount
+      Object.assign(transaction, { amount, status })
       return transaction.save()
     })
     .catch(err => err && _(`[${scope}][ERR] Fail to find`, err))
