@@ -16,7 +16,10 @@ _("")
     const parsed = parseAskTransferMsg(msg)
 
     _("[parsed]", parsed)
-    if (!parsed) return (pass = false && _(`Fail to parsed`))
+    if (!parsed) {
+      _(`Fail to parsed`)
+      return (pass = false)
+    }
 
     const { accountNumber } = parsed
     const expectedAccNumber = "0421000495557"

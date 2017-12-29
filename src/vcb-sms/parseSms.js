@@ -3,6 +3,7 @@ import { parseTransferMsg } from "./parseTransferMsg"
 import { parseDepositMsg } from "./parseDepositMsg"
 import { isDoneDepositMsg } from "./isDoneDepositMsg"
 import { isReceivedCoinMsg } from "./isReceivedCoin"
+import { store as saveTransactionToDb } from "../mongodb/transaction"
 
 /**
  * Explain meaning for status in Transaction model
@@ -17,6 +18,8 @@ import {
   DONE_TRANSFER_TO_SELLER
 } from "../mongodb/models/transaction"
 
+const _ = console.log
+
 export const parseProcesses = [
   { func: parseDepositMsg, status: TRANSFERRING_DEPOSIT },
   { func: isDoneDepositMsg, status: DONE_DEPOSIT },
@@ -26,27 +29,29 @@ export const parseProcesses = [
 ]
 
 export const parseSms = sms => {
-  const { parsed, status } = parseProcesses.reduce(
-    (carry, parseProcess) => {
-      // Ignore, already successful parse
-      if (carry) return carry
-      const { func, status } = parseProcess
-      const parsed = func(sms)
-      return { parsed, status }
-    },
-    { parsed: null, status: null }
-  )
-
-  // Ignore, not our case
-  if (!parsed) return null
-
+  const carry = parseProcesses.reduce((carry, parseProcess) => {
+    // Ignore, if successful parse
+    if (carry) return carry
+    const { func, status } = parseProcess
+    const parsed = func(sms.msg)
+    return { parsed, status }
+  }, null)
+  if (!carry) {
+    _("[parseSms] Not our cases")
+    return null
+  }
+  const { parsed, status } = carry
+  _("[parseSms][parsed, status]", parsed, status)
+  const tasks = []
   switch (status) {
     case TRANSFERRING_DEPOSIT: {
-      const { amount, vcbTime, buyerNumber, sellerNumber } = parsed
+      tasks.push(saveTransactionToDb(parsed))
       break
     }
     default: {
       break
     }
   }
+
+  return Promise.all(tasks)
 }

@@ -19,7 +19,7 @@ export const api = reqBody => {
   const { type } = reqBody
   let resData = {}
   let statusCode = 200
-  let tasks = []
+  const tasks = []
 
   switch (type) {
     case SMS_MSG: {

@@ -1,7 +1,8 @@
 import m from "mongoose"
 import { debugEnhance } from "../utils/index"
 import { DONE_TRANSFER_TO_SELLER } from "./models/transaction"
-import moment from "moment"
+
+const _ = console.log
 
 export const getModel = modelName => {
   modelName = modelName || "Transaction"
@@ -15,17 +16,22 @@ export const getAll = debugEnhance(() => {
     .catch(err => err)
 }, "transaction.getAll")
 
-export const store = debugEnhance(smsInfo => {
+export const store = debugEnhance(tranInfo => {
+  if (!tranInfo) {
+    _("[transaction.store] No tranInfo to save")
+    return null
+  }
   const Model = getModel()
-  const now = +moment().format("X")
-  const createdAt = now
-  const updatedAt = now
-  const { buyerNumber, sellerNumber } = smsInfo
-  return Model.findOneAndUpdate(
-    { buyerNumber, sellerNumber, status: { $ne: DONE_TRANSFER_TO_SELLER } },
-    { ...smsInfo, updatedAt, $setOnInsert: { createdAt } },
-    { upsert: true, new: true }
-  )
-    .exec()
-    .catch(err => err)
+  const { buyerNumber, sellerNumber } = tranInfo
+  const modelWait = Model.findOne({ buyerNumber, sellerNumber, status: { $ne: DONE_TRANSFER_TO_SELLER } })
+  const saveWait = modelWait.then(transaction => {
+    const curr = (transaction && transaction.amount) || 0
+    transaction = transaction || tranInfo
+    const { amount: addUp } = transaction
+    const amount = curr + addUp
+    const updatedTransaction = { ...transaction, amount }
+    const model = new Model(updatedTransaction)
+    return model.save()
+  })
+  return saveWait.catch(err => err)
 }, "transaction.store")

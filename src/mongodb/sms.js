@@ -19,10 +19,7 @@ export const getAll = debugEnhance(() => {
 
 export const store = debugEnhance(smsInfo => {
   const Model = getModel()
-  const now = +moment().format("X")
-  const createdAt = now
-  const updatedAt = now
-  const model = new Model({ ...smsInfo, createdAt, updatedAt })
+  const model = new Model({ ...smsInfo })
   return model.save().catch(err => err)
 }, "sms.store")
 

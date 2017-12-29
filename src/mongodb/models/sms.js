@@ -1,4 +1,5 @@
 import m from "mongoose"
+import moment from "moment"
 
 const SmsSchema = new m.Schema({
   senderNumber: {
@@ -14,11 +15,18 @@ const SmsSchema = new m.Schema({
     type: String
   },
   createdAt: {
-    type: Number
+    type: Number,
+    default: () => +moment().format("X")
   },
   updatedAt: {
-    type: Number
+    type: Number,
+    default: () => +moment().format("X")
   }
+})
+
+SmsSchema.pre("save", function(done) {
+  this.updatedAt = +moment().format("X")
+  done()
 })
 
 m.model("Sms", SmsSchema, "smses")

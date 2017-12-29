@@ -15,7 +15,7 @@ export const mPHM = {
 }
 
 export const parseDepositMsg = msg => {
-  const pattern = /So du TK VCB.+thay doi +([A-Za-z0-9,]+) VND.+luc (\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}).+Ref.+\.(\d{10,}) - (\d{10,})\./
+  const pattern = /So du TK VCB.+thay doi \+([A-Za-z0-9,]+) VND.+luc (\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}).+Ref.+\.(\d{10,}) - (\d{10,})\./
   const matches = msg.match(pattern)
   if (!matches) return null
   return mapDepositMatches(matches)
@@ -23,7 +23,8 @@ export const parseDepositMsg = msg => {
 
 export const mapDepositMatches = matches => {
   try {
-    const amount = matches[mPHM.amount]
+    const rawAmount = matches[mPHM.amount]
+    const amount = +rawAmount.replace(/,/g, "")
     const vcbTime = matches[mPHM.vcbTime]
     const buyerNumber = matches[mPHM.buyerNumber]
     const sellerNumber = matches[mPHM.sellerNumber]
