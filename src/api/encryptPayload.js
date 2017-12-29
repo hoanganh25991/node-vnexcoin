@@ -18,14 +18,10 @@ const decryptAesBase64 = ({ str, algorithm, key }) => {
 
 export const decrypt = str => {
   const payloadStr = decryptAesBase64({ str, algorithm, key })
-  _("[payloadStr]", payloadStr)
   return JSON.parse(payloadStr)
 }
 
 export const encrypt = obj => {
-  _("[obj]", obj)
   const str = JSON.stringify(obj)
-  _("[str]", str)
-  _(encryptAesBase64({ str, algorithm, key }))
   return encryptAesBase64({ str, algorithm, key })
 }

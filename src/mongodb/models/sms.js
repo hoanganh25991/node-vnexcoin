@@ -7,14 +7,17 @@ const SmsSchema = new m.Schema({
   receiverNumber: {
     type: String
   },
-  timestamp: {
-    type: Number
-  },
   msg: {
     type: String
   },
   IMEI: {
     type: String
+  },
+  createdAt: {
+    type: Number
+  },
+  updatedAt: {
+    type: Number
   }
 })
 

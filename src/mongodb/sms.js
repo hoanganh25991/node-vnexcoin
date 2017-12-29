@@ -19,10 +19,11 @@ export const getAll = debugEnhance(() => {
 
 export const store = debugEnhance(smsInfo => {
   const Model = getModel()
-  const { senderNumber, receiverNumber, timestamp } = smsInfo
-  return Model.update({ senderNumber, receiverNumber, timestamp }, smsInfo, { upsert: true, new: true })
-    .exec()
-    .catch(err => err)
+  const now = +moment().format("X")
+  const createdAt = now
+  const updatedAt = now
+  const model = new Model({ ...smsInfo, createdAt, updatedAt })
+  return model.save().catch(err => err)
 }, "sms.store")
 
 export const getHistory = debugEnhance(queryInfo => {
@@ -31,7 +32,7 @@ export const getHistory = debugEnhance(queryInfo => {
   const queryTimestamp = +moment()
     .subtract(queryTime, "seconds")
     .format("X")
-  return Model.find({ senderNumber, timestamp: { $lt: queryTimestamp } })
+  return Model.find({ senderNumber, createdAt: { $lt: queryTimestamp } })
     .limit(queryLimit)
     .exec()
     .catch(err => err)
