@@ -15,6 +15,8 @@ _("")
   try {
     const res = await getAll()
     _("[res]", res)
+
+    _("")
   } catch (err) {
     _("[ERR]", err)
     pass = false
