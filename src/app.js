@@ -9,7 +9,7 @@ import bodyParser from "body-parser"
 import cookieParser from "cookie-parser"
 import { apiRoute } from "./routers/api"
 import { welcomeRoute } from "./routers/welcome"
-import { connect, loadModels } from "./mongodb/connect"
+import { connect, loadModels } from "./mongodb/connection"
 import { cronCleanUp as cronCleanToken } from "./token/index"
 import { errMiddleWare, apiMiddleware, injectReqUri } from "./api/index"
 
