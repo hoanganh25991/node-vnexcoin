@@ -13,9 +13,11 @@ _("")
 
   try {
     const msg = fs.readFileSync(path.join(__dirname, "depositMsg.txt")).toString()
-    const { buyerNumber } = parseDepositMsg(msg)
+    const parsed = parseDepositMsg(msg)
+    const { buyerNumber } = parsed
     const expectedNumber = "01256654629"
     pass = buyerNumber === expectedNumber
+    _("[parsed]", parsed)
   } catch (err) {
     _("[ERR]", err)
     pass = false

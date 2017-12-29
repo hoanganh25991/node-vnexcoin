@@ -3,7 +3,7 @@ import moment from "moment"
 export const VCB_DATE_FORMAT = "DD-MM-YYYY HH:mm:ss"
 
 export const parseTransferMsg = msg => {
-  const pattern = /So du TK VCB.+luc (\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}).+Ref.+\.().+\./
+  const pattern = /So du TK VCB.+luc (\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}).+Ref.+\.CKXONG(.{24})\./
   const matches = msg.match(pattern)
   if (!matches) return null
   return mapTransferMatches(matches)
