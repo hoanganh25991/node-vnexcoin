@@ -17,21 +17,23 @@ export const getAll = debugEnhance(() => {
 }, "transaction.getAll")
 
 export const store = debugEnhance(tranInfo => {
+  const scope = "transaction.store"
   if (!tranInfo) {
-    _("[transaction.store] No tranInfo to save")
+    _(`[${scope}] No tranInfo to save`)
     return null
   }
   const Model = getModel()
   const { buyerNumber, sellerNumber } = tranInfo
   const modelWait = Model.findOne({ buyerNumber, sellerNumber, status: { $ne: DONE_TRANSFER_TO_SELLER } })
-  const saveWait = modelWait.then(transaction => {
-    const curr = (transaction && transaction.amount) || 0
-    transaction = transaction || tranInfo
-    const { amount: addUp } = transaction
-    const amount = curr + addUp
-    const updatedTransaction = { ...transaction, amount }
-    const model = new Model(updatedTransaction)
-    return model.save()
-  })
-  return saveWait.catch(err => err)
+  const saveWait = modelWait
+    .then(existTran => {
+      const curr = (existTran && existTran.amount) || 0
+      const addUp = tranInfo.amount
+      const amount = curr + addUp
+      const transaction = existTran || new Model(tranInfo)
+      transaction.amount = amount
+      return transaction.save()
+    })
+    .catch(err => err && _(`[${scope}][ERR] Fail to find`, err))
+  return saveWait.catch(err => err && _(`[${scope}][ERR] Fail to update`, err))
 }, "transaction.store")

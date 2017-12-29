@@ -45,7 +45,8 @@ export const parseSms = sms => {
   const tasks = []
   switch (status) {
     case TRANSFERRING_DEPOSIT: {
-      tasks.push(saveTransactionToDb(parsed))
+      const tranInfo = parsed && { ...parsed, status: TRANSFERRING_DEPOSIT }
+      tasks.push(saveTransactionToDb(tranInfo))
       break
     }
     default: {
