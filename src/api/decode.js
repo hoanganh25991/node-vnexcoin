@@ -1,39 +1,29 @@
 import crypto from "crypto"
+import dotenv from "dotenv"
 
+dotenv.config()
+const { ENCRYPT_PAYLOAD_KEY: key, ENCRYPT_PAYLOAD_ALGORITHM: algorithm } = process.env
 const _ = console.log
-const key = "AlCfIvNuzsdjkh723"
-const algorithm = "aes-128-ecb"
 
-const encrypt = function(str, key) {
-  // By default, cipher hash MD5 on key
+// By default, cipher hash MD5 on key
+const encrypt = (str, key) => {
   const cipher = crypto.createCipher(algorithm, key)
   cipher.update(str, "utf8", "base64")
   return cipher.final("base64")
 }
 
-// const decrypt = function(str, key) {
-//   const decipher = crypto.createDecipher(algorithm, key);
-//   return decipher.update(str, 'base64', 'utf8') + decipher.final('utf8');
-// };
-//
-// export const decode = base64 => {
-//   // Decode base64
-//   // const buff = new Buffer(base64, 'base64')
-//   // const hash = buff.toString("utf8")
-//
-//   // const e = encrypt("hello world", key)
-//   // _("[e]", e)
-//
-//   const d = decrypt(base64, key)
-//   _("[d]", d)
-//
-// }
+const decrypt = (str, key) => {
+  const decipher = crypto.createDecipher(algorithm, key)
+  decipher.update(str, "base64", "utf8")
+  return decipher.final("utf8")
+}
 
-export const encode = str => {
-  _("[i]", str)
-  const e = encrypt(str, key)
-  _("[e]", e)
-  // const buff = new Buffer(e, "utf8")
-  // const base64 = buff.toString("base64")
-  // return base64
+export const decode = str => {
+  const payloadStr = decrypt(str, key)
+  return JSON.parse(payloadStr)
+}
+
+export const encode = obj => {
+  const str = JSON.stringify(obj)
+  return encrypt(str, key)
 }
