@@ -1,5 +1,6 @@
 import m from "mongoose"
 import moment from "moment"
+import { transformEnhance } from "../utils"
 
 const SmsSchema = new m.Schema({
   senderNumber: {
@@ -29,4 +30,5 @@ SmsSchema.pre("save", function(done) {
   done()
 })
 
+transformEnhance(SmsSchema)
 m.model("Sms", SmsSchema, "smses")

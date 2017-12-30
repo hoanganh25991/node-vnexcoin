@@ -5,6 +5,8 @@ import { isReceivedCoinMsg } from "./isReceivedCoin"
 import { parseTransferringMsg } from "./parseTransferringMsg"
 import { parseDoneTransferMsg } from "./parseDoneTransferMsg"
 import { store as saveTransactionToDb, find as findTran } from "../mongodb/transaction"
+import { pushToTopic } from "../fcm/push"
+import { VNEXCOIN_TOPIC as topic } from "../fcm/init"
 
 /**
  * Explain meaning for status in Transaction model
@@ -48,7 +50,11 @@ export const parseSms = async sms => {
   switch (status) {
     case TRANSFERRING_DEPOSIT: {
       const tranInfo = parsed && { ...parsed, status: TRANSFERRING_DEPOSIT }
+      const payload = {
+        data: {}
+      }
       tasks.push(saveTransactionToDb(tranInfo))
+      tasks.push(pushToTopic({}))
       break
     }
     case DONE_DEPOSIT: {
