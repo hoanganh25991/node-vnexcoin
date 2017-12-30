@@ -57,8 +57,9 @@ export const parseSms = async sms => {
       const tranInfo = parsed && { ...parsed, status: TRANSFERRING_DEPOSIT }
       const transaction = saveTransactionToDb(tranInfo)
       if (!transaction) break
+
       const msg = msgTemplate({ transaction })
-      const payload = { data: { transaction, msg } }
+      const payload = { transaction, msg }
       tasks.push(pushToTopic({ topic, payload }))
       break
     }
@@ -67,10 +68,6 @@ export const parseSms = async sms => {
       const { senderNumber: buyerNumber } = sms
       const tranInfo = { buyerNumber, sellerNumber, status: DONE_DEPOSIT }
       tasks.push(saveTransactionToDb(tranInfo))
-      // const transaction = saveTransactionToDb(tranInfo)
-      // if(!transaction) break
-      // const payload = {data: {transaction, msg}}
-      // tasks.push(pushToTopic({topic, payload}))
       break
     }
     case ASK_TRANSFER: {
@@ -79,8 +76,9 @@ export const parseSms = async sms => {
       const tranInfo = { buyerNumber, sellerNumber, status: ASK_TRANSFER }
       const transaction = saveTransactionToDb(tranInfo)
       if (!transaction) break
+
       const msg = msgTemplate({ transaction, sellerAccNum })
-      const payload = { data: { transaction, msg } }
+      const payload = { transaction, msg }
       tasks.push(pushToTopic({ topic, payload }))
       break
     }
@@ -106,8 +104,9 @@ export const parseSms = async sms => {
       const tranInfo = tranObj && { ...tranObj, status: DONE_TRANSFER_TO_SELLER }
       const uTransaction = saveTransactionToDb(tranInfo)
       if (!uTransaction) break
+
       const msg = msgTemplate({ transaction: uTransaction })
-      const payload = { data: { transaction, msg } }
+      const payload = { transaction, msg }
       tasks.push(pushToTopic({ topic, payload }))
       break
     }
