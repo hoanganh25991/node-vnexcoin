@@ -7,6 +7,7 @@ import { parseDoneTransferMsg } from "./parseDoneTransferMsg"
 import { store as saveTransactionToDb, find as findTran } from "../mongodb/transaction"
 import { pushToTopic } from "../fcm/push"
 import { VNEXCOIN_TOPIC as topic } from "../fcm/init"
+import { msgTemplate } from "./msgTemplate"
 
 /**
  * Explain meaning for status in Transaction model
@@ -50,11 +51,11 @@ export const parseSms = async sms => {
   switch (status) {
     case TRANSFERRING_DEPOSIT: {
       const tranInfo = parsed && { ...parsed, status: TRANSFERRING_DEPOSIT }
-      const payload = {
-        data: {}
-      }
-      tasks.push(saveTransactionToDb(tranInfo))
-      tasks.push(pushToTopic({}))
+      const transaction = saveTransactionToDb(tranInfo)
+      if (!transaction) break
+      const msg = msgTemplate({ transaction })
+      const payload = { data: { transaction, msg } }
+      tasks.push(pushToTopic({ topic, payload }))
       break
     }
     case DONE_DEPOSIT: {
@@ -62,13 +63,21 @@ export const parseSms = async sms => {
       const { senderNumber: buyerNumber } = sms
       const tranInfo = { buyerNumber, sellerNumber, status: DONE_DEPOSIT }
       tasks.push(saveTransactionToDb(tranInfo))
+      // const transaction = saveTransactionToDb(tranInfo)
+      // if(!transaction) break
+      // const payload = {data: {transaction, msg}}
+      // tasks.push(pushToTopic({topic, payload}))
       break
     }
     case ASK_TRANSFER: {
       const { buyerNumber, sellerAccNum } = parsed
       const { senderNumber: sellerNumber } = sms
       const tranInfo = { buyerNumber, sellerNumber, status: ASK_TRANSFER }
-      tasks.push(saveTransactionToDb(tranInfo))
+      const transaction = saveTransactionToDb(tranInfo)
+      if (!transaction) break
+      const msg = msgTemplate({ transaction, sellerAccNum })
+      const payload = { data: { transaction, msg } }
+      tasks.push(pushToTopic({ topic, payload }))
       break
     }
     case RECEIVED_COIN: {
@@ -91,7 +100,11 @@ export const parseSms = async sms => {
       const transaction = await findTran(id)
       const tranObj = transaction && transaction.toObject()
       const tranInfo = tranObj && { ...tranObj, status: DONE_TRANSFER_TO_SELLER }
-      tasks.push(saveTransactionToDb(tranInfo))
+      const uTransaction = saveTransactionToDb(tranInfo)
+      if (!uTransaction) break
+      const msg = msgTemplate({ transaction: uTransaction })
+      const payload = { data: { transaction, msg } }
+      tasks.push(pushToTopic({ topic, payload }))
       break
     }
     default: {

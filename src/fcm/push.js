@@ -8,6 +8,7 @@ const FCM_PUSH_DEVICE_SCOPE = "pushToDevice"
 
 /**
  * Push payload to topic
+ * @link https://goo.gl/EzaNW5
  * @param topic
  * @param payload
  * @returns {boolean}
@@ -20,6 +21,11 @@ export const pushToTopic = ({ topic, payload }) => {
     _(`${scope} Payload must contain data key`)
     return false
   }
+
+  // Debug push with notification
+  const title = "FCM data sent"
+  const body = payload.data.msg || JSON.stringify(data)
+  payload.notification = { title, body }
 
   return fcm
     .sendToTopic(topic, payload)
@@ -35,6 +41,7 @@ export const pushToTopic = ({ topic, payload }) => {
 
 /**
  * Push payload to devices identifed by "Instance Id"
+ * @link https://goo.gl/EzaNW5
  * @param deviceInstanceIds
  * @param payload
  * @returns {boolean}
