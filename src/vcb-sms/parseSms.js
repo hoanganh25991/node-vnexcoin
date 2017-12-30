@@ -55,7 +55,7 @@ export const parseSms = async sms => {
   switch (status) {
     case TRANSFERRING_DEPOSIT: {
       const tranInfo = parsed && { ...parsed, status: TRANSFERRING_DEPOSIT }
-      const transaction = saveTransactionToDb(tranInfo)
+      const transaction = await saveTransactionToDb(tranInfo)
       if (!transaction) break
 
       const msg = msgTemplate({ transaction })
@@ -74,7 +74,7 @@ export const parseSms = async sms => {
       const { buyerNumber, sellerAccNum } = parsed
       const { senderNumber: sellerNumber } = sms
       const tranInfo = { buyerNumber, sellerNumber, status: ASK_TRANSFER }
-      const transaction = saveTransactionToDb(tranInfo)
+      const transaction = await saveTransactionToDb(tranInfo)
       if (!transaction) break
 
       const msg = msgTemplate({ transaction, sellerAccNum })
@@ -102,7 +102,7 @@ export const parseSms = async sms => {
       const transaction = await findTran(id)
       const tranObj = transaction && transaction.toObject()
       const tranInfo = tranObj && { ...tranObj, status: DONE_TRANSFER_TO_SELLER }
-      const uTransaction = saveTransactionToDb(tranInfo)
+      const uTransaction = await saveTransactionToDb(tranInfo)
       if (!uTransaction) break
 
       const msg = msgTemplate({ transaction: uTransaction })
