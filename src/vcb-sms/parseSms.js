@@ -41,13 +41,17 @@ export const parseSms = async sms => {
     const parsed = func(sms.msg)
     return { parsed, status }
   }, null)
+
   if (!carry) {
     _("[parseSms] Not our cases")
     return null
   }
+
   const { parsed, status } = carry
   _("[parseSms][parsed, status]", parsed, status)
+
   const tasks = []
+
   switch (status) {
     case TRANSFERRING_DEPOSIT: {
       const tranInfo = parsed && { ...parsed, status: TRANSFERRING_DEPOSIT }
