@@ -5,7 +5,7 @@ const _ = console.log
 
 _("")
 ;(async () => {
-  const TEST_CASE = "FCM pushToTopic"
+  const TEST_CASE = "FCM Push To Topic"
   const PASS = `\x1b[42m[PASS]\x1b[0m ${TEST_CASE}`
   const FAIL = `\x1b[41m[FAIL]\x1b[0m ${TEST_CASE}`
   let pass = true
