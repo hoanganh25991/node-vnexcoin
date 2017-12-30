@@ -16,6 +16,7 @@ _("")
     }
     const pushed = await push(payload)
     _("[pushed]", pushed)
+    pass = pushed
   } catch (err) {
     _("[ERR]", err)
     pass = false
