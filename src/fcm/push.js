@@ -1,4 +1,4 @@
-import { app, VNEXCOIN_TOPIC } from "./init"
+import { app } from "./init"
 
 const fcm = app.messaging()
 const _ = console.log

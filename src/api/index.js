@@ -4,10 +4,14 @@ export { injectReqUri } from "./injectUri"
 import { decrypt, encrypt } from "./encryptPayload"
 import { store as saveSmsToDb } from "../mongodb/sms"
 import { parseSms } from "../vcb-sms/parseSms"
+import { subscribeDeviceToTopic } from "../fcm/subscribeDeviceToTopic"
+import { VNEXCOIN_TOPIC } from "../fcm/init"
 
 export const SMS_MSG = "SMS_MSG"
 export const ENCRYPT_PAYLOAD = "ENCRYPT_PAYLOAD"
 export const DECRYPT_PAYLOAD = "DECRYPT_PAYLOAD"
+export const FCM_SUBSCRIBE_DEVICE = "FCM_SUBSCRIBE_DEVICE"
+
 const _ = console.log
 
 /**
@@ -15,7 +19,7 @@ const _ = console.log
  * @param reqBody
  * @returns {Object.<{resData: {}, statusCode: number, tasks: array}>}
  */
-export const api = reqBody => {
+export const api = async reqBody => {
   const { type } = reqBody
   let resData = {}
   let statusCode = 200
@@ -40,6 +44,13 @@ export const api = reqBody => {
       const { payloadToken } = reqBody
       const payload = decrypt(payloadToken)
       resData = { payload }
+      break
+    }
+    case FCM_SUBSCRIBE_DEVICE: {
+      const { deviceInstanceId, topic = VNEXCOIN_TOPIC } = reqBody
+      const deviceInstanceIds = [deviceInstanceId]
+      const subscribed = await subscribeDeviceToTopic({ deviceInstanceIds, topic })
+      resData = { subscribed }
       break
     }
     default: {

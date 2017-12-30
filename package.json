@@ -7,7 +7,6 @@
     "babel-plugin-inline-json-import": "^0.2.1",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-preset-node7": "^1.5.0",
-    "fs-extra": "^5.0.0",
     "husky": "^0.14.3",
     "lint-staged": "^4.0.0",
     "nodemon": "^1.12.4",
@@ -37,8 +36,7 @@
     "start": "yarn start:dev",
     "start:dev": "nodemon dist/bin/www",
     "test": "babel-node scripts/run-test",
-    "build": "babel-node scripts/deploy.js",
-    "migration": "babel-node scripts/migration.js",
+    "build": "babel-node scripts/build.js",
     "docs": "babel-node scripts/docs.js"
   },
   "lint-staged": {
