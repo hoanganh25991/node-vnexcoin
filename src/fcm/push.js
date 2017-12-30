@@ -21,8 +21,13 @@ export const buildFcmPayload = payload => {
   const body = payload.msg || dataStr
 
   return {
-    data: dataStr,
-    notification: { title, body }
+    data: {
+      data: dataStr
+    },
+    notification: {
+      title,
+      body
+    }
   }
 }
 
@@ -35,7 +40,6 @@ export const buildFcmPayload = payload => {
  */
 export const pushToTopic = ({ topic, payload }) => {
   const scope = FCM_PUSH_TOPIC_SCOPE
-
   const fcmPayload = buildFcmPayload(payload)
 
   return fcm
@@ -59,15 +63,10 @@ export const pushToTopic = ({ topic, payload }) => {
  */
 export const pushToDevice = ({ deviceInstanceIds, payload }) => {
   const scope = FCM_PUSH_DEVICE_SCOPE
-  const hasData = payload && payload.data
-
-  if (!hasData) {
-    _(`${scope} Payload must contain data key`)
-    return false
-  }
+  const fcmPayload = buildFcmPayload(payload)
 
   return fcm
-    .sendToDevice(deviceInstanceIds, payload)
+    .sendToDevice(deviceInstanceIds, fcmPayload)
     .then(res => {
       _(`[${scope}] Push success`, res)
       return true
