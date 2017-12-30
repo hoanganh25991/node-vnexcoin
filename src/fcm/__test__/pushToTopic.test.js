@@ -12,9 +12,7 @@ _("")
 
   try {
     const topic = VNEXCOIN_TOPIC
-    const payload = {
-      data: { name: "anh" }
-    }
+    const payload = { name: "anh" }
     const pushed = await pushToTopic({ topic, payload })
     _("[pushed]", pushed)
     pass = pushed

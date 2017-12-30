@@ -7,6 +7,26 @@ const FCM_PUSH_TOPIC_SCOPE = "pushToTopic"
 const FCM_PUSH_DEVICE_SCOPE = "pushToDevice"
 
 /**
+ * Auto format payload before send
+ * 1. data MUST under data key in payload
+ * 2. Any key in data, val as str, DONT ALLOW nested obj
+ * @param payload
+ * @return MessagingPayload
+ */
+export const buildFcmPayload = payload => {
+  const dataStr = JSON.stringify(payload)
+
+  // Debug push with notification
+  const title = "FCM data sent"
+  const body = payload.msg || dataStr
+
+  return {
+    data: dataStr,
+    notification: { title, body }
+  }
+}
+
+/**
  * Push payload to topic
  * @link https://goo.gl/EzaNW5
  * @param topic
@@ -15,20 +35,11 @@ const FCM_PUSH_DEVICE_SCOPE = "pushToDevice"
  */
 export const pushToTopic = ({ topic, payload }) => {
   const scope = FCM_PUSH_TOPIC_SCOPE
-  const hasData = payload && payload.data
 
-  if (!hasData) {
-    _(`${scope} Payload must contain data key`)
-    return false
-  }
-
-  // Debug push with notification
-  const title = "FCM data sent"
-  const body = payload.data.msg || JSON.stringify(payload.data)
-  payload.notification = { title, body }
+  const fcmPayload = buildFcmPayload(payload)
 
   return fcm
-    .sendToTopic(topic, payload)
+    .sendToTopic(topic, fcmPayload)
     .then(res => {
       _(`[${scope}] Push success`, res)
       return true
