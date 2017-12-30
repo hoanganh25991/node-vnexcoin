@@ -24,7 +24,7 @@ export const pushToTopic = ({ topic, payload }) => {
 
   // Debug push with notification
   const title = "FCM data sent"
-  const body = payload.data.msg || JSON.stringify(data)
+  const body = payload.data.msg || JSON.stringify(payload.data)
   payload.notification = { title, body }
 
   return fcm
