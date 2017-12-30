@@ -11,14 +11,16 @@ _("")
   let pass = true
 
   try {
-    const payload = { name: "anh" }
+    const payload = {
+      data: { name: "anh" }
+    }
     const pushed = await push(payload)
     _("[pushed]", pushed)
   } catch (err) {
     _("[ERR]", err)
     pass = false
   } finally {
-    await app.close()
+    await app.delete()
     pass ? _(PASS) : _(FAIL)
   }
 })()
