@@ -123,7 +123,7 @@ export const removeLeakedToken = async ({ code, email, timeRange: [startTime, en
     // Increase curMnt
     curMnt = curMnt.add(1, "s")
 
-    // Too much promise push in
+    // Too much promise pushToTopic in
     // Wait for it resolved before move on
     const overWhelm = waitArr.length > chunkSize
     if (!overWhelm) continue
