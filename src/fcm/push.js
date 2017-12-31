@@ -44,8 +44,7 @@ export const pushToTopic = ({ topic, payload }) => {
   const fcmPayload = buildFcmPayload(payload)
 
   // Debug
-  // open-close, please delete app on exit
-  pushToWeb({ payload })
+  pushToWeb({ topic, payload })
 
   return fcm
     .sendToTopic(topic, fcmPayload)
