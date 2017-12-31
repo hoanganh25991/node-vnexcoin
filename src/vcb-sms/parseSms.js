@@ -99,14 +99,13 @@ export const parseSms = async sms => {
     }
     case DONE_TRANSFER_TO_SELLER: {
       const { transactionId: id } = parsed
-      const transaction = await findTran(id)
-      const tranObj = transaction && transaction.toObject()
+      const _transaction = await findTran(id)
+      const tranObj = _transaction && _transaction.toObject()
       const tranInfo = tranObj && { ...tranObj, status: DONE_TRANSFER_TO_SELLER }
-      const uTransaction = await saveTransactionToDb(tranInfo)
-      if (!uTransaction) break
+      const transaction = await saveTransactionToDb(tranInfo)
+      if (!transaction) break
 
-      _("uTransaction", uTransaction)
-      const msg = msgTemplate({ transaction: uTransaction })
+      const msg = msgTemplate({ transaction })
       const payload = { transaction, msg }
       tasks.push(pushToTopic({ topic, payload }))
       break
