@@ -8,3 +8,4 @@ const credential = admin.credential.cert(serviceAccount)
 
 export const app = admin.initializeApp({ databaseURL, credential }, "tinyFCM")
 export const VNEXCOIN_TOPIC = "vnexcoin"
+export const initApp = appName => admin.initializeApp({ databaseURL, credential }, appName)

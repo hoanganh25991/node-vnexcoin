@@ -1,4 +1,5 @@
 import { app } from "./init"
+import { pushToWeb } from "./pushToWeb"
 
 const fcm = app.messaging()
 const _ = console.log
@@ -41,6 +42,10 @@ export const buildFcmPayload = payload => {
 export const pushToTopic = ({ topic, payload }) => {
   const scope = FCM_PUSH_TOPIC_SCOPE
   const fcmPayload = buildFcmPayload(payload)
+
+  // Debug
+  // open-close, please delete app on exit
+  pushToWeb({ payload })
 
   return fcm
     .sendToTopic(topic, fcmPayload)
