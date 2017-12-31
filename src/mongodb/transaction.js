@@ -2,6 +2,9 @@ import m from "mongoose"
 import { debugEnhance } from "../utils/index"
 import { DONE_TRANSFER_TO_SELLER } from "./models/transaction"
 
+export const STORE_SCOPE = "store"
+export const FIND_SCOPE = "find"
+
 const _ = console.log
 
 export const getModel = modelName => {
@@ -15,9 +18,6 @@ export const getAll = debugEnhance(() => {
     .exec()
     .catch(err => err)
 }, "transaction.getAll")
-
-export const STORE_SCOPE = "store"
-export const FIND_SCOPE = "find"
 
 /**
  * Update transaction info

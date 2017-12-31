@@ -25,7 +25,7 @@ export const fVndAmount = amount => {
   const amountStr = "" + amount
   // "12345678" > "876,543,21"
   const reversed = reverseStr(amountStr)
-    .match(/.{3}/g)
+    .match(/.{1,3}/g)
     .join(",")
   // "876,543,21" ? "12,345,678"
   return reverseStr(reversed)

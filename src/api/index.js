@@ -6,11 +6,13 @@ import { store as saveSmsToDb } from "../mongodb/sms"
 import { parseSms } from "../vcb-sms/parseSms"
 import { subscribeDeviceToTopic } from "../fcm/subscribeDeviceToTopic"
 import { VNEXCOIN_TOPIC } from "../fcm/init"
+import { find } from "../mongodb/transaction"
 
 export const SMS_MSG = "SMS_MSG"
 export const ENCRYPT_PAYLOAD = "ENCRYPT_PAYLOAD"
 export const DECRYPT_PAYLOAD = "DECRYPT_PAYLOAD"
 export const FCM_SUBSCRIBE_DEVICE = "FCM_SUBSCRIBE_DEVICE"
+export const FIND_TRANSACTION = "FIND_TRANSACTION"
 
 const _ = console.log
 
@@ -51,6 +53,12 @@ export const api = async reqBody => {
       const deviceInstanceIds = [deviceInstanceId]
       const subscribed = await subscribeDeviceToTopic({ deviceInstanceIds, topic })
       resData = { subscribed }
+      break
+    }
+    case FIND_TRANSACTION: {
+      const { transactionId } = reqBody
+      const transaction = await find(transactionId)
+      resData = { transaction }
       break
     }
     default: {

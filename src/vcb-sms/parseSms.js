@@ -105,6 +105,7 @@ export const parseSms = async sms => {
       const uTransaction = await saveTransactionToDb(tranInfo)
       if (!uTransaction) break
 
+      _("uTransaction", uTransaction)
       const msg = msgTemplate({ transaction: uTransaction })
       const payload = { transaction, msg }
       tasks.push(pushToTopic({ topic, payload }))
