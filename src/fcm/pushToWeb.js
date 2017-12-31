@@ -1,7 +1,8 @@
 import { initApp, VNEXCOIN_TOPIC } from "./init"
 import dotenv from "dotenv"
 
-const fbApp = initApp("fbApp")
+export const fbApp = initApp("fbApp")
+export const db = fbApp.database()
 dotenv.config()
 const { FIREBASE_BRANCH: mainBranch } = process.env
 const _ = console.log
@@ -35,7 +36,7 @@ export const updateBranchX = ({ mainBranch, dataBranch, val }) => {
  * @param dataBranch
  * @param payload
  */
-export const pushToWeb = ({ topic: dataBranch = VNEXCOIN_TOPIC, payload }) => {
+export const pushToWeb = ({ topic: dataBranch, payload }) => {
   const val = JSON.stringify(payload)
   return updateBranchX({ mainBranch, dataBranch, val })
 }
